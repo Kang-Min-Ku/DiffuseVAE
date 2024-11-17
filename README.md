@@ -3,13 +3,43 @@
 
 This repo is for the team project of the Deep Generative Model lecture.
 
+# Requirements
+
+- Python==3.11.0 (Align the Python version with the PyTorch compatibility)
+- pytorch==2.2.0 (diffuseVAE is not strongly constrained by the PyTorch version)
+```bash
+pip install torch==2.2.0 torchvision==0.17.0 torchaudio==2.2.0 --index-url https://download.pytorch.org/whl/cu121
+```
+- torchmetrics==0.6.0
+- torch_lightning==1.4.9
+- lmdb
+- click
+- matplotlib
+- wandb
+- hydra-core
+- scipy
+
 # How to setup?
 
 1. Pull main branch.
-2. **Modify the root path in the config file.** The configuration files for execution are located as .yaml files under subdirectories named after the dataset within the "**main/configs**" directory.
+2. Set dataset root path. There are two options
+   - **modify "dataset.ddpm.data.root" in execution scripts (Step 3)**. The execution scripts are located in "**scripts/**". This is recommended way.
+   - **modify the root path in the config file.** The configuration files for execution are located as .yaml files under subdirectories named after the dataset within the "**main/configs**" directory.
+3. Set execution scripts (241117. Only train scripts now)
+   1. VAE train
+      - Set dataset path. The absolute path is recommended.
+      - Set results_dir and chkpt_prefix. They are the argument for "vae_chkpt_path" in the DDPM training script.
+   2. DDPM train
+      - Set dataset path. The absolute path is recommended.
+      - Set vae_chkpt_path. This is the absolute path of the output .ckpt file of VAE training.
+      - Set results_dir and chkpt_prefix. They are argument for test (Maybe).
 
-config root path-script root path => 같은거 바꾸는거
+# Tip
+1. If you have warning about worker, then increase the number of workers!
 
+# For avoiding hassle
+
+1. make auto directory code
 
 ---
 <span style="font-size:40px; color:#4e79a7; font-weight:600">Official README</span>
