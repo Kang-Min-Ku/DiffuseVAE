@@ -25,9 +25,9 @@ class CIFAR10Dataset(Dataset):
     def __getitem__(self, idx):
         img, _ = self.dataset[idx]
         if self.norm:
-            img = (np.asarray(img).astype(np.float) / 127.5) - 1.0
+            img = (np.asarray(img).astype(float) / 127.5) - 1.0
         else:
-            img = np.asarray(img).astype(np.float) / 255.0
+            img = np.asarray(img).astype(float) / 255.0
         return torch.tensor(img).permute(2, 0, 1).float()
 
     def __len__(self):
