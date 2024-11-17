@@ -23,8 +23,8 @@ pip install torch==2.2.0 torchvision==0.17.0 torchaudio==2.2.0 --index-url https
 
 1. Pull main branch.
 2. Set dataset root path. There are two options
-   - **modify "dataset.ddpm.data.root" in execution scripts (Step 3)**. The execution scripts are located in "**scripts/**". This is recommended way.
-   - **modify the root path in the config file.** The configuration files for execution are located as .yaml files under subdirectories named after the dataset within the "**main/configs**" directory.
+   1. *modify "dataset.ddpm.data.root" in execution scripts (Step 3)**. The execution scripts are located in "**scripts/**". This is recommended way.
+   2. **modify the root path in the config file.** The configuration files for execution are located as .yaml files under subdirectories named after the dataset within the "**main/configs**" directory.
 3. Set execution scripts (241117. Only train scripts now)
    1. VAE train
       - Set dataset path. The absolute path is recommended.
