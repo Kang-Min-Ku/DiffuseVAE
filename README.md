@@ -1,3 +1,19 @@
+
+# Description
+
+This repo is for the team project of the Deep Generative Model lecture.
+
+# How to setup?
+
+1. Pull main branch.
+2. **Modify the root path in the config file.** The configuration files for execution are located as .yaml files under subdirectories named after the dataset within the "**main/configs**" directory.
+
+config root path-script root path => 같은거 바꾸는거
+
+
+---
+<span style="font-size:40px; color:#4e79a7; font-weight:600">Official README</span>
+
 # DiffuseVAE: Efficient, Controllable and High-Fidelity Generation from Low-Dimensional Latents
 
 This repo contains the official implementation of the paper: [DiffuseVAE: Efficient, Controllable and High-Fidelity Generation from Low-Dimensional Latents](https://arxiv.org/abs/2201.00308) by [Kushagra Pandey](https://kpandey008.github.io/), [Avideep Mukherjee](https://www.cse.iitk.ac.in/users/avideep/), [Piyush Rai](https://www.cse.iitk.ac.in/users/piyush/), [Abhishek Kumar](http://www.abhishek.umiacs.io/)
