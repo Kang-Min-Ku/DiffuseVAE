@@ -12,6 +12,7 @@ pip install torch==2.2.0 torchvision==0.17.0 torchaudio==2.2.0 --index-url https
 ```
 - torchmetrics==0.6.0
 - torch_lightning==1.4.9
+- pytorch-fid
 - lmdb
 - click
 - matplotlib
