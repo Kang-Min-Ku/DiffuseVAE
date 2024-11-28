@@ -3,7 +3,7 @@
 
 This repo is for the team project of the Deep Generative Model lecture.
 
-# Requirements
+# Requirements (diffuseVAE)
 
 - Python==3.11.0 (Align the Python version with the PyTorch compatibility)
 - pytorch==2.2.0 (diffuseVAE is not strongly constrained by the PyTorch version)
@@ -19,6 +19,14 @@ pip install torch==2.2.0 torchvision==0.17.0 torchaudio==2.2.0 --index-url https
 - wandb
 - hydra-core
 - scipy
+
+# Requirements (evaluation metric)
+To calculate **off-the-shelf Inception Score (IS)**, the latest version of `torchmetrics` is required. However, this version causes a conflict when running **diffuseVAE**, necessitating the creation of a new Conda virtual environment.
+
+While the repository also supports IS calculation compatible with **diffuseVAE**, using the off-the-shelf IS calculation is recommended for better accuracy and convenience.
+
+- torchmetrics>=1.6.0
+- clean-fid
 
 # How to setup?
 
