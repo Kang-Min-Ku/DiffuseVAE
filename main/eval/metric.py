@@ -66,10 +66,10 @@ def FID(
             img = ToPILImage()(img)
             img.save(os.path.join(gen_path, f"{i}.png"))
 
-    fid_score = fid(real_path, gen_path,
+    fid_score = fid.compute_fid(real_path, gen_path,
                     batch_size=batch_size,
                     custom_feat_extractor=custom_feat_extractor,
-                    custom_image_transform=custom_image_transform,
+                    custom_image_tranform=custom_image_transform,
                     num_workers=num_workers,
                     device=device)
 
