@@ -58,6 +58,8 @@ def FID(
         for i, img in enumerate(real_source):
             img = ToPILImage()(img)
             img.save(os.path.join(real_path, f"{i}.png"))
+    else:
+        real_path = real_source
     
     if torch.is_tensor(gen_source):
         gen_temp_dir = tempfile.TemporaryDirectory()
@@ -65,6 +67,8 @@ def FID(
         for i, img in enumerate(gen_source):
             img = ToPILImage()(img)
             img.save(os.path.join(gen_path, f"{i}.png"))
+    else:
+        gen_path = gen_source
 
     fid_score = fid.compute_fid(real_path, gen_path,
                     batch_size=batch_size,
@@ -73,8 +77,10 @@ def FID(
                     num_workers=num_workers,
                     device=device)
 
-    real_temp_dir.cleanup()
-    gen_temp_dir.cleanup()
+    if real_temp_dir is not None:
+        real_temp_dir.cleanup()
+    if gen_temp_dir is not None:
+        gen_temp_dir.cleanup()
 
     return fid_score.item()
 
