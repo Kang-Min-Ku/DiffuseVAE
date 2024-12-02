@@ -5,14 +5,20 @@ This repo is for the team project of the Deep Generative Model lecture.
 
 # Requirements (diffuseVAE)
 
-- Python==3.11.0 (Align the Python version with the PyTorch compatibility)
-- pytorch==2.2.0 (diffuseVAE is not strongly constrained by the PyTorch version)
 ```bash
 pip install torch==2.2.0 torchvision==0.17.0 torchaudio==2.2.0 --index-url https://download.pytorch.org/whl/cu121
+pip install pytorch_lightning==1.4.9 lmdb click matplotlib wandb hydra-core scipy
 ```
+
+- Python==3.11.0 (Align the Python version with the PyTorch compatibility)
+- pytorch==2.2.0 (diffuseVAE is not strongly constrained by the PyTorch version)
 - torchmetrics==0.6.0
+<<<<<<< HEAD
 - torch_lightning==1.4.9
 - pytorch-fid
+=======
+- pytorch_lightning==1.4.9
+>>>>>>> origin/main
 - lmdb
 - click
 - matplotlib
@@ -31,17 +37,23 @@ While the repository also supports IS calculation compatible with **diffuseVAE**
 # How to setup?
 
 1. Pull main branch.
-2. Set dataset root path. There are two options
-   1. *modify "dataset.ddpm.data.root" in execution scripts (Step 3)**. The execution scripts are located in "**scripts/**". This is recommended way.
+2. Make a directory for the dataset. Dataset itself would be downloaded automatically in the designated path, but you must make the directory to store it.
+3. Set root paths for the datasets. There are two options:
+   1. (Recommended) **modify `data.root`, in execution scripts**. The execution scripts are located in "**scripts/**".
    2. **modify the root path in the config file.** The configuration files for execution are located as .yaml files under subdirectories named after the dataset within the "**main/configs**" directory.
-3. Set execution scripts (241117. Only train scripts now)
+4. Set execution scripts (241117. Only train scripts now)
    1. VAE train
-      - Set dataset path. The absolute path is recommended.
-      - Set results_dir and chkpt_prefix. They are the argument for "vae_chkpt_path" in the DDPM training script.
+      - You may see an example in "**scripts/samples/**".
+      - Set a dataset path at `dataset.vae.data.root`. An absolute path is recommended.
+      - Set a device at `dataset.vae.training.device`.
+      - Set `dataset.vae.training.results_dir` and `dataset.vae.training.chkpt_prefix`. These are the argument for `dataset.ddpm.training.vae_chkpt_path` in the DDPM training script.
    2. DDPM train
-      - Set dataset path. The absolute path is recommended.
-      - Set vae_chkpt_path. This is the absolute path of the output .ckpt file of VAE training.
-      - Set results_dir and chkpt_prefix. They are argument for test (Maybe).
+      - Set a dataset path at `dataset.ddpm.data.root`. An absolute path is recommended.
+      - Set a device at `dataset.ddpm.training.device`.
+      - Set `dataset.ddpm.training.vae_chkpt_path`. This is an absolute path of the output `.ckpt` file of VAE training.
+      - Set `dataset.ddpm.training.results_dir` and `dataset.ddpm.training.chkpt_prefix`. These are argument for test (maybe).
+5. Add permissions for the scripts.
+   * For example, `chomd u+x scripts/samples/*.sh`.
 
 # Tip
 1. If you have warning about worker, then increase the number of workers!

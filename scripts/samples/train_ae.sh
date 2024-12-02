@@ -1,12 +1,12 @@
 python main/train_ae.py +dataset=cifar10/train \
-                     dataset.vae.data.root='/data2/ssongzoe/diffuseVAE/datasets/cifar10/' \
+                     dataset.vae.data.root='/home/mk/course-diffusionvae-20241119/datasets/cifar10/' \
                      dataset.vae.data.name='cifar10' \
                      dataset.vae.data.hflip=True \
                      dataset.vae.training.batch_size=42 \
                      dataset.vae.training.log_step=50 \
                      dataset.vae.training.epochs=1 \
-                     dataset.vae.training.device=\'gpu:2\' \
-                     dataset.vae.training.results_dir=\'/data2/ssongzoe/diffuseVAE/checkpoints/cifar10/\' \
+                     dataset.vae.training.device=\'gpu:0\' \
+                     dataset.vae.training.results_dir=\'/home/mk/course-diffusionvae-20241119/checkpoints/cifar10/\' \
                      dataset.vae.training.workers=2 \
                      dataset.vae.training.chkpt_prefix=\'vae-cifar10-epoch=500-train_loss=0.00\' \
                      dataset.vae.training.alpha=1.0

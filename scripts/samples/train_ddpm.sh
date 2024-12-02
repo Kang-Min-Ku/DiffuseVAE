@@ -1,6 +1,6 @@
 # CIFAR-10 (Form-1)
 python main/train_ddpm.py +dataset=cifar10/train \
-                     dataset.ddpm.data.root=\'/data2/ssongzoe/diffuseVAE/datasets/cifar10/\' \
+                     dataset.ddpm.data.root=\'/home/mk/course-diffusionvae-20241119/datasets/cifar10/\' \
                      dataset.ddpm.data.name='cifar10' \
                      dataset.ddpm.data.norm=True \
                      dataset.ddpm.data.hflip=True \
@@ -15,13 +15,13 @@ python main/train_ddpm.py +dataset=cifar10/train \
                      dataset.ddpm.training.epochs=1 \
                      dataset.ddpm.training.z_cond=False \
                      dataset.ddpm.training.batch_size=32 \
-                     dataset.ddpm.training.vae_chkpt_path=\'/data2/ssongzoe/diffuseVAE/checkpoints/cifar10/checkpoints/vae-vae-cifar10-epoch=500-train_loss=0.00-epoch=00-train_loss=0.0000.ckpt\' \
-                     dataset.ddpm.training.device=\'gpu:2\' \
-                     dataset.ddpm.training.results_dir=\'/data2/ssongzoe/diffuseVAE/results/diffusevae_cifar10_rework_form1_28thJuly_sota_nheads=8_dropout=0.3/\' \
+                     dataset.ddpm.training.vae_chkpt_path=\'/home/mk/course-diffusionvae-20241119/checkpoints/cifar10/checkpoints/vae-vae-cifar10-epoch=500-train_loss=0.00-epoch=00-train_loss=0.0000.ckpt\' \
+                     dataset.ddpm.training.device=\'gpu:0\' \
+                     dataset.ddpm.training.results_dir=\'/home/mk/course-diffusionvae-20241119/results/diffusevae_cifar10_rework_form1_28thJuly_sota_nheads=8_dropout=0.3/\' \
                      dataset.ddpm.training.workers=1 \
                      dataset.ddpm.training.chkpt_prefix=\'cifar10_rework_form1_28thJuly_sota_nheads=8_dropout=0.3\'
 
-dataset.ddpm.training.epochs=2850
+# dataset.ddpm.training.epochs=2850
 
 # # CelebA-64 (Form-1)
 # python main/train_ddpm.py +dataset=celeba64/train \
