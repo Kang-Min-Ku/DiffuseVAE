@@ -24,7 +24,7 @@ pip install pytorch_lightning==1.4.9 lmdb click matplotlib wandb hydra-core scip
 # Requirements (evaluation metric)
 To calculate **off-the-shelf Inception Score (IS)**, the latest version of `torchmetrics` is required. However, this version causes a conflict when running **diffuseVAE**, necessitating the creation of a new Conda virtual environment.
 
-While the repository also supports IS calculation compatible with **diffuseVAE**, using the off-the-shelf IS calculation is recommended for better accuracy and convenience.
+While the repository also supports IS calculation compatible with **diffuseVAE**, using the off-the-shelf IS calculation is recommended for better accuracy and convenience
 
 - torchmetrics>=1.6.0
 - clean-fid
