@@ -27,7 +27,7 @@ This document is intended to share the progress of Stage 2.
         - uncond:  \hat{x_0}를 사용하지 않음
     - DDPMWrapper
         - online ddpm: trainable decoder
-        - target ddpm: non-trainable decoder. online ddpm과 exponential moving average를 통해서 업데이트 됨. 테스트 
+        - target ddpm: non-trainable decoder. online ddpm과 exponential moving average를 통해서 업데이트 됨. 테스트(샘플링) 할 때 쓰임
 
 # Progress
 
