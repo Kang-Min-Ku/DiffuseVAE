@@ -8,7 +8,7 @@ This document is intended to share the progress of Stage 2.
 
 # Progress
 
-## 241208
+## 241207
 
 - 윤정
     1. 코드 리뷰
@@ -16,6 +16,11 @@ This document is intended to share the progress of Stage 2.
 - 민구
     1. 코드 리뷰
     2. 활용할만한 joint training 기법 찾아보기
+ 
+## 241209 (1210까지)
+
+- VAE & DDPM 합치기
+- VAE가 현재 pl.LightningModule인데 nn.Module로 정의를 바꿔야할지 아니면 그대로 가도 될지
 
 # Joint Training Candidate (This is just Minku's idea)
 
