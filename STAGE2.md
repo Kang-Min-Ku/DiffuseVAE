@@ -60,4 +60,4 @@ This document is intended to share the progress of Stage 2.
 # Reference
 
 1. [DDPM code review](https://kyujinpy.tistory.com/123)
-   
+2. [Download pretrained DiffuseVAE parameter & Cifar10 latents](https://drive.google.com/drive/folders/1GzIh75NnpgPa4A1hSb_viPowuaSHnL7R)
