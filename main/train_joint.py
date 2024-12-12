@@ -22,7 +22,6 @@ def __parse_str(s):
     split = s.split(",")
     return [int(s) for s in split if s != "" and s is not None]
 
-
 @hydra.main(config_path="configs")
 def train(config):
     # Get config_ddpm and setup
@@ -114,10 +113,12 @@ def train(config):
         alpha_max=config_vae.training.alpha_max,
         alpha_anneal_method=config_vae.training.alpha_anneal_method,
         alpha_anneal_max_steps=config_vae.training.alpha_anneal_max_steps,
+        alpha_anneal_lr=config_vae.training.alpha_anneal_lr,
         beta=config_ddpm.training.beta,
         beta_max=config_ddpm.training.beta_max,
         beta_anneal_method=config_ddpm.training.beta_anneal_method,
-        beta_anneal_max_steps=config_ddpm.training.beta_anneal_max_steps
+        beta_anneal_max_steps=config_ddpm.training.beta_anneal_max_steps,
+        beta_anneal_lr=config_ddpm.training.beta_anneal_lr,
     )
 
     # Trainer

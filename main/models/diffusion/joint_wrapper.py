@@ -7,6 +7,7 @@ from models.diffusion.ddpm_form2 import DDPMv2
 from util import space_timesteps
 from itertools import chain
 import copy
+import numpy as np
 
 
 class JointWrapper(pl.LightningModule):
@@ -36,10 +37,12 @@ class JointWrapper(pl.LightningModule):
         alpha_max = 1.0,
         alpha_anneal_method = "uniform",
         alpha_anneal_max_steps = 500,
+        alpha_anneal_lr = 0.01,
         beta = 1.0,
         beta_max = 1.0,
         beta_anneal_method = "uniform",
         beta_anneal_max_steps = 500,
+        beta_anneal_lr = 0.01
     ):
         super().__init__()
         assert loss in ["l1", "l2"]
@@ -80,9 +83,8 @@ class JointWrapper(pl.LightningModule):
         self.spaced_diffusion = None
 
         # loss coeff scheduler
-        self.alpha_scheduler = AnnealScheduler(alpha_anneal_method, alpha_anneal_max_steps, alpha, alpha_max)
-        self.beta_scheduler = AnnealScheduler(beta_anneal_method, beta_anneal_max_steps, beta, beta_max)
-        self.coeff_anneal_epoch = 1
+        self.alpha_scheduler = AnnealScheduler(alpha_anneal_method, alpha_anneal_max_steps, alpha, alpha_max, alpha_anneal_lr)
+        self.beta_scheduler = AnnealScheduler(beta_anneal_method, beta_anneal_max_steps, beta, beta_max, beta_anneal_lr)
 
     def forward(
         self,
@@ -140,6 +142,9 @@ class JointWrapper(pl.LightningModule):
         )
 
     def training_step(self, batch, batch_idx):
+        # check beta with below codes
+        if batch_idx == 0:
+            print(f"At epoch {self.current_epoch} beta: {self.beta_scheduler.val}")
         # Optimizers
         optim = self.optimizers()
         lr_sched = self.lr_schedulers()
@@ -175,7 +180,7 @@ class JointWrapper(pl.LightningModule):
         )
 
         # Compute loss
-        loss = self.criterion(x, cond, mu, logvar,
+        loss, kl_loss, ddpm_loss = self.criterion(x, cond, mu, logvar,
                               eps, eps_pred,
                               self.alpha_scheduler.val, self.beta_scheduler.val)
 
@@ -185,7 +190,7 @@ class JointWrapper(pl.LightningModule):
         torch.nn.utils.clip_grad_norm_(
             self.online_network.decoder.parameters(), self.grad_clip_val
         )
-        # NOTE: necessary?
+        
         torch.nn.utils.clip_grad_norm_(
             self.vae.parameters(), self.grad_clip_val
         )
@@ -194,11 +199,8 @@ class JointWrapper(pl.LightningModule):
         # Scheduler step
         lr_sched.step()
         self.log("loss", loss, prog_bar=True)
-        self.alpha_scheduler.step(step=self.coeff_anneal_epoch, loss=loss)
-        self.beta_scheduler.step(step=self.coeff_anneal_epoch, loss=loss)
-        self.coeff_anneal_epoch += 1
-
-        print(self.beta_scheduler.val)
+        self.alpha_scheduler.store(loss=kl_loss)
+        self.beta_scheduler.store(loss=ddpm_loss)
 
         return loss
 
@@ -293,41 +295,60 @@ class JointWrapper(pl.LightningModule):
 
         total_loss = (recons_loss + alpha * kl_loss) + (beta * ddpm_loss)
 
-        return total_loss
+        return total_loss, kl_loss.item(), ddpm_loss.item()
     
+    def on_epoch_end(self):
+        self.alpha_scheduler.step(step=self.current_epoch+1)
+        self.beta_scheduler.step(step=self.current_epoch+1)
 
+        return super().on_epoch_end()
+    
 class AnnealScheduler:
-    def __init__(self, method, max_steps, min_val, max_val):
+    def __init__(self, method, max_steps, min_val, max_val, lr=None):
         # method: uniform, linear, sigmoid, learnable
         self.method = method
         self.max_steps = max_steps
         self.min_val = min_val
         self.max_val = max_val
+        self.lr = lr
 
         self.anneal_func = None
-        self.val = torch.nn.Parameter(torch.tensor([min_val], requires_grad=True)) if method == "learnable" else min_val
+        self.val = min_val
+
+        self.loss_storage = []
 
     def customize_anneal_func(self, new_anneal_func):
         self.anneal_func = new_anneal_func
 
-    def step(self, step=None, loss=None):
+    def step(self, step=None):
         if self.anneal_func is not None:
-            self.val = self.anneal_func(self.val, self.max_steps, self.min_val, self.max_val, step, loss)
+            self.val = self.anneal_func(self.val, self.max_steps, self.min_val, self.max_val, step, loss, self.lr)
         elif self.method == "uniform":
             self.val = self.val
         elif self.method == "linear":
             self.val = self.min_val + (self.max_val - self.min_val) * step / self.max_steps
         elif self.method == "sigmoid":
-            self.val = self.min_val + (self.max_val - self.min_val) * 1 / (1 + torch.exp(-loss))
+            x0 = self.max_steps / 2
+            steepness = 10 / self.max_steps # 10 is a hyperparameter, if you want to change it, use custom function.
+            sigmoid = 1 / (1 + np.exp(-steepness * (step - x0))) # larger steepness makes fast increases near from x0
+            self.val = self.min_val + (self.max_val - self.min_val) * sigmoid
+
         elif self.method == "learnable":            
-            optimizer = torch.optim.SGD([self.val], lr=0.01) # TODO: hyperparameterize the learning rate
-            optimizer.zero_grad()
-            -loss.backward()
-            optimizer.step()
+            # optimizer = torch.optim.SGD([self.val], lr=0.01) # TODO: hyperparameterize the learning rate
+            # optimizer.zero_grad()
+            # -loss.backward()
+            # optimizer.step()
+            loss = np.mean(self.loss_storage)
+            self.loss_storage = []
+            self.val = self.val - (self.lr * -loss)
 
         if self.val < self.min_val:
             self.val = self.min_val
         elif self.val > self.max_val:
             self.val = self.max_val
+
+    def store(self, loss):
+        if self.method == "learnable":
+            self.loss_storage.append(loss)
 
 
