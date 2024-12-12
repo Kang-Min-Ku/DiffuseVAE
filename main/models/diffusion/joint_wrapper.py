@@ -198,6 +198,8 @@ class JointWrapper(pl.LightningModule):
         self.beta_scheduler.step(step=self.coeff_anneal_epoch, loss=loss)
         self.coeff_anneal_epoch += 1
 
+        print(self.beta_scheduler.val)
+
         return loss
 
     def predict_step(self, batch, batch_idx, dataloader_idx=None):
@@ -262,7 +264,8 @@ class JointWrapper(pl.LightningModule):
         # )
         optimizer = torch.optim.Adam(
             chain(self.online_network.decoder.parameters(),
-                  self.vae.parameters()
+                  self.vae.parameters(),
+
                   ), lr=self.lr)
 
         # Define the LR scheduler (As in Ho et al.)
@@ -321,5 +324,10 @@ class AnnealScheduler:
             optimizer.zero_grad()
             -loss.backward()
             optimizer.step()
+
+        if self.val < self.min_val:
+            self.val = self.min_val
+        elif self.val > self.max_val:
+            self.val = self.max_val
 
 

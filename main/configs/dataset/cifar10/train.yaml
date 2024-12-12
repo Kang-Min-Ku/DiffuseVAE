@@ -43,6 +43,10 @@ ddpm:
     loss: "l2"   # Diffusion loss type. Among ['l2', 'l1']
     chkpt_prefix: ""   # prefix appended to the checkpoint name
     cfd_rate: 0.0   # Conditioning signal dropout rate as in Classifier-free guidance
+    beta: 1.0 # = beta_min
+    beta_max: 1.0
+    beta_anneal_method: "uniform" # uniform, linear, sigmoid, learnable
+    beta_anneal_max_steps: 500 # 400
 
 # VAE config used for VAE training
 vae:
@@ -74,3 +78,6 @@ vae:
     workers: 2
     chkpt_prefix: ""
     alpha: 1.0   # The beta value in beta-vae. I know the param name might be misleading :(
+    alpha_max: 1.0
+    alpha_anneal_method: "uniform" # uniform, linear, sigmoid, learnable
+    alpha_anneal_max_steps: 500
