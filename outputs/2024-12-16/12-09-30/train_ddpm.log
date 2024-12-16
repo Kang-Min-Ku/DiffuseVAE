@@ -1,0 +1,43 @@
+[2024-12-16 12:09:30,092][__main__][INFO] - data:
+  root: /workspace/datasets/
+  name: cifar10
+  image_size: 32
+  hflip: true
+  n_channels: 3
+  norm: true
+model:
+  dim: 128
+  attn_resolutions: 16,
+  n_residual: 2
+  dim_mults: 1,2,2,2
+  dropout: 0.3
+  n_heads: 8
+  beta1: 0.0001
+  beta2: 0.02
+  n_timesteps: 1000
+training:
+  seed: 0
+  fp16: false
+  use_ema: true
+  z_cond: true
+  z_dim: 512
+  type: form1
+  ema_decay: 0.9999
+  batch_size: 32
+  epochs: 2850
+  log_step: 1
+  device: gpu:0
+  chkpt_interval: 1
+  optimizer: Adam
+  lr: 0.0002
+  restore_path: ''
+  vae_chkpt_path: /workspace/vae_chkpts/vae-vae-cifar10-epoch=499-train_loss=0.0000_20241202.ckpt
+  results_dir: /data1/kushagrap20/diffusevae_cifar10_rework_form1_28thJuly_sota_nheads=8_dropout=0.3/
+  workers: 1
+  grad_clip: 1.0
+  n_anneal_steps: 5000
+  loss: l2
+  chkpt_prefix: cifar10_rework_form1_28thJuly_sota_nheads=8_dropout=0.3
+  cfd_rate: 0.0
+
+[2024-12-16 12:09:49,359][__main__][INFO] - Using DDPM with type: <class 'models.diffusion.ddpm.DDPM'> and data norm: True

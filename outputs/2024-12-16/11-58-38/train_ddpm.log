@@ -1,0 +1,42 @@
+[2024-12-16 11:58:38,433][__main__][INFO] - data:
+  root: ???
+  name: cifar10
+  image_size: 32
+  hflip: true
+  n_channels: 3
+  norm: true
+model:
+  dim: 128
+  attn_resolutions: 16,
+  n_residual: 2
+  dim_mults: 1,2,2,2
+  dropout: 0.3
+  n_heads: 8
+  beta1: 0.0001
+  beta2: 0.02
+  n_timesteps: 1000
+training:
+  seed: 0
+  fp16: false
+  use_ema: true
+  z_cond: false
+  z_dim: 512
+  type: form1
+  ema_decay: 0.9999
+  batch_size: 32
+  epochs: 5000
+  log_step: 1
+  device: gpu:0
+  chkpt_interval: 1
+  optimizer: Adam
+  lr: 0.0002
+  restore_path: ''
+  vae_chkpt_path: ???
+  results_dir: ???
+  workers: 2
+  grad_clip: 1.0
+  n_anneal_steps: 5000
+  loss: l2
+  chkpt_prefix: ''
+  cfd_rate: 0.0
+
