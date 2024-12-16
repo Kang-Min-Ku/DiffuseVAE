@@ -290,7 +290,8 @@ class JointWrapper(pl.LightningModule):
         # beta: weight for DDPM loss
         mse_loss = nn.MSELoss(reduction="mean")
         recons_loss = mse_loss(x_hat, x)
-        kl_loss = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp())
+        # kl_loss = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp())
+        kl_loss = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp()) / x.size(0) ############ updated
         ddpm_loss = mse_loss(eps_hat, eps)
 
         total_loss = (recons_loss + alpha * kl_loss) + (beta * ddpm_loss)
