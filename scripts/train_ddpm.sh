@@ -1,25 +1,28 @@
 # # CIFAR-10 (Form-1)
-# python main/train_ddpm.py +dataset=cifar10/train \
-#                      dataset.ddpm.data.root=\'/data1/kushagrap20/datasets/\' \
-#                      dataset.ddpm.data.name='cifar10' \
-#                      dataset.ddpm.data.norm=True \
-#                      dataset.ddpm.data.hflip=True \
-#                      dataset.ddpm.model.dim=128 \
-#                      dataset.ddpm.model.dropout=0.3 \
-#                      dataset.ddpm.model.attn_resolutions=\'16,\' \
-#                      dataset.ddpm.model.n_residual=2 \
-#                      dataset.ddpm.model.dim_mults=\'1,2,2,2\' \
-#                      dataset.ddpm.model.n_heads=8 \
-#                      dataset.ddpm.training.type='form1' \
-#                      dataset.ddpm.training.cfd_rate=0.0 \
-#                      dataset.ddpm.training.epochs=2850 \
-#                      dataset.ddpm.training.z_cond=False \
-#                      dataset.ddpm.training.batch_size=32 \
-#                      dataset.ddpm.training.vae_chkpt_path=\'/data1/kushagrap20/checkpoints/cifar10/vae-cifar10-epoch=500-train_loss=0.00.ckpt\' \
-#                      dataset.ddpm.training.device=\'gpu:0\' \
-#                      dataset.ddpm.training.results_dir=\'/data1/kushagrap20/diffusevae_cifar10_rework_form1_28thJuly_sota_nheads=8_dropout=0.3/\' \
-#                      dataset.ddpm.training.workers=1 \
-#                      dataset.ddpm.training.chkpt_prefix=\'cifar10_rework_form1_28thJuly_sota_nheads=8_dropout=0.3\'
+python main/train_ddpm.py +dataset=cifar10/train \
+                      #/data1/kushagrap20/datasets/ -> /workspace/DGM_copy/datasets/cifar10-jpg-train/
+                      dataset.ddpm.data.root=\'/workspace/DGM_copy/datasets/cifar10-jpg-train/\' \
+                      dataset.ddpm.data.name='cifar10' \
+                      dataset.ddpm.data.norm=True \
+                      dataset.ddpm.data.hflip=True \
+                      dataset.ddpm.model.dim=128 \
+                      dataset.ddpm.model.dropout=0.3 \
+                      dataset.ddpm.model.attn_resolutions=\'16,\' \
+                      dataset.ddpm.model.n_residual=2 \
+                      dataset.ddpm.model.dim_mults=\'1,2,2,2\' \
+                      dataset.ddpm.model.n_heads=8 \
+                      dataset.ddpm.training.type='form1' \
+                      dataset.ddpm.training.cfd_rate=0.0 \
+                      dataset.ddpm.training.epochs=2850 \
+                      #False -> True (below)
+                      dataset.ddpm.training.z_cond=True \
+                      dataset.ddpm.training.batch_size=32 \
+                      #/data1/kushagrap20/checkpoints/cifar10/vae-cifar10-epoch=500-train_loss=0.00.ckpt -> /vae_chkpts/vae-vae-cifar10-epoch=499-train_loss=0.0000_20241202.ckpt
+                      dataset.ddpm.training.vae_chkpt_path=\'/workspace/DGM_copy/vae_chkpts/vae-vae-cifar10-epoch=499-train_loss=0.0000_20241202.ckpt\' \
+                      dataset.ddpm.training.device=\'gpu:0\' \
+                      dataset.ddpm.training.results_dir=\'/data1/kushagrap20/diffusevae_cifar10_rework_form1_28thJuly_sota_nheads=8_dropout=0.3/\' \
+                      dataset.ddpm.training.workers=1 \
+                      dataset.ddpm.training.chkpt_prefix=\'cifar10_rework_form1_28thJuly_sota_nheads=8_dropout=0.3\'
 
 
 # # CelebA-64 (Form-1)
