@@ -1,17 +1,9 @@
 [[source]]
 url = "https://pypi.org/simple"
-verify_ssl = true
-name = "pypi"
+verify_ssl = false
+name = "pip_conf_index_global"
 
 [packages]
-torch = "==1.11"
-click = "*"
-matplotlib = "*"
-pytorch-lightning = "==1.4.9"
-torchvision = "==0.12"
-wandb = "*"
-hydra-core = "*"
-scipy = "*"
 
 [dev-packages]
 
