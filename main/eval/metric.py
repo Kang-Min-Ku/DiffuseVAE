@@ -88,7 +88,7 @@ def FID(
 def IS(
     images = None,
     image_path = None,
-    use_off_the_shelf = True,
+    use_off_the_shelf = False,
     inception_network = None,
     resize = (299, 299),
     batch_size = 32,

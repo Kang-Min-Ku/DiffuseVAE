@@ -1,6 +1,6 @@
 # CIFAR-10 (Form-1)
 python main/train_ddpm.py +dataset=cifar10/train \
-                     dataset.ddpm.data.root=\'/home/mk/course-diffusionvae-20241119/datasets/cifar10/\' \
+                     dataset.ddpm.data.root=\'/home/dj/course-diffusevae-20241212/datasets/cifar10/\' \
                      dataset.ddpm.data.name='cifar10' \
                      dataset.ddpm.data.norm=True \
                      dataset.ddpm.data.hflip=True \
@@ -12,14 +12,14 @@ python main/train_ddpm.py +dataset=cifar10/train \
                      dataset.ddpm.model.n_heads=8 \
                      dataset.ddpm.training.type='form1' \
                      dataset.ddpm.training.cfd_rate=0.0 \
-                     dataset.ddpm.training.epochs=1 \
+                     dataset.ddpm.training.epochs=500 \
                      dataset.ddpm.training.z_cond=False \
-                     dataset.ddpm.training.batch_size=32 \
-                     dataset.ddpm.training.vae_chkpt_path=\'/home/mk/course-diffusionvae-20241119/checkpoints/cifar10/checkpoints/vae-vae-cifar10-epoch=500-train_loss=0.00-epoch=00-train_loss=0.0000.ckpt\' \
+                     dataset.ddpm.training.batch_size=128 \
+                     dataset.ddpm.training.vae_chkpt_path=\'/home/dj/course-diffusevae-20241212/checkpoints/vae-cifar10-phase1/checkpoints/vae-vae-cifar10-epoch=499-train_loss=0.0000.ckpt\' \
                      dataset.ddpm.training.device=\'gpu:0\' \
-                     dataset.ddpm.training.results_dir=\'/home/mk/course-diffusionvae-20241119/results/diffusevae_cifar10_rework_form1_28thJuly_sota_nheads=8_dropout=0.3/\' \
-                     dataset.ddpm.training.workers=1 \
-                     dataset.ddpm.training.chkpt_prefix=\'cifar10_rework_form1_28thJuly_sota_nheads=8_dropout=0.3\'
+                     dataset.ddpm.training.results_dir=\'/home/dj/course-diffusevae-20241212/checkpoints/ddpm-cifar10-stage1-form1/\' \
+                     dataset.ddpm.training.workers=2 \
+                     dataset.ddpm.training.chkpt_prefix=\'cifar10_nheads=8_dropout=0.3\'
 
 # dataset.ddpm.training.epochs=2850
 
