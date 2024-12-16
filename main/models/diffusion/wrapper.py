@@ -31,8 +31,8 @@ class DDPMWrapper(pl.LightningModule):
         z_cond=False,
         ddpm_latents=None,
         
-        adaptive_weight_config1="option2",
-        adaptive_weight_config2="option1",
+        #adaptive_weight_config1="option2",
+        #adaptive_weight_config2="option1",
     ):
         super().__init__()
         assert loss in ["l1", "l2"]
@@ -72,8 +72,8 @@ class DDPMWrapper(pl.LightningModule):
         # Spaced Diffusion (for spaced re-sampling)
         self.spaced_diffusion = None
         
-        self.adaptive_weight_config1 = adaptive_weight_config1
-        self.adaptive_weight_config2 = adaptive_weight_config2
+        #self.adaptive_weight_config1 = adaptive_weight_config1
+        #self.adaptive_weight_config2 = adaptive_weight_config2
 
     def forward(
         self,
@@ -145,6 +145,7 @@ class DDPMWrapper(pl.LightningModule):
                 cond = 2 * cond - 1
 
                 # Adaptive weighting
+                '''
                 if self.z_cond:
                     if self.adaptive_weight_config1 == "option1":
                         W = torch.sigmoid(-logvar)
@@ -154,7 +155,9 @@ class DDPMWrapper(pl.LightningModule):
                         W = torch.sigmoid(-logvar)
                 else:
                     raise ValueError("Invalid adaptive_weight_config1")
-            
+                '''
+                W = torch.sigmoid(-logvar)
+                '''
                 if self.adaptive_weight_config2 == "option1":
                     z = W * z  # Apply weighting
                 elif self.adaptive_weight_config2 == "option2":
@@ -163,7 +166,8 @@ class DDPMWrapper(pl.LightningModule):
                     z = z * mask  # Element-wise dropout
                 else:
                     raise ValueError("Invalid adaptive_weight_config2")
-
+                '''
+                z = W * z  # Apply weighting
         # Set the conditioning signal based on clf-free guidance rate
         if torch.rand(1)[0] < self.cfd_rate:
             cond = torch.zeros_like(x)
@@ -221,6 +225,11 @@ class DDPMWrapper(pl.LightningModule):
             recons = self.vae(z)
             recons = 2 * recons - 1
 
+            # Adaptive weighting
+            mu, logvar = self.vae.encode(x_t * 0.5 + 0.5)
+            W = torch.sigmoid(-logvar)
+            z = W * z  # Apply weighting
+
             # Initial temperature scaling
             x_t = x_t * self.temp
 
@@ -231,6 +240,11 @@ class DDPMWrapper(pl.LightningModule):
             img = batch
             recons = self.vae.forward_recons(img * 0.5 + 0.5)
             recons = 2 * recons - 1
+            
+            # Adaptive weighting
+            mu, logvar = self.vae.encode(x_t * 0.5 + 0.5)
+            W = torch.sigmoid(-logvar)
+            z = W * z  # Apply weighting
 
             # DDPM encoder
             x_t = self.online_network.compute_noisy_input(
