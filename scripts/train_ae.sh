@@ -1,3 +1,17 @@
+# CIFAR10 training
+python main/train_ae.py +dataset=cifar10/train \
+                    dataset.vae.data.root='/workspace/datasets/' \
+                    dataset.vae.data.name='cifar10' \
+                    dataset.vae.data.hflip=True \
+                    dataset.vae.training.batch_size=128 \
+                    dataset.vae.training.log_step=50 \
+                    dataset.vae.training.epochs=500 \
+                    dataset.vae.training.device=\'gpu:0\' \
+                    dataset.vae.training.results_dir=\'/workspace/stage3_NF_prior_vae_chkpts/\' \
+                    dataset.vae.training.workers=2 \
+                    dataset.vae.training.chkpt_prefix=\'vae-cifar10\' \
+                    dataset.vae.training.alpha=1.0
+
 # # CelebAMaskHQ training
 # python main/train_ae.py +dataset=celebamaskhq128/train \
 #                      dataset.vae.data.root='/data1/kushagrap20/datasets/CelebAMask-HQ/' \
