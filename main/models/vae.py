@@ -3,6 +3,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+from glow import Glow  # Import the Glow model
 
 def parse_layer_string(s):
     layers = []
@@ -196,6 +197,7 @@ class VAE(pl.LightningModule):
         dec_channel_str,
         alpha=1.0,
         lr=1e-4,
+        glow_args=None,  # Glow prior arguments
     ):
         super().__init__()
         self.save_hyperparameters()
@@ -212,6 +214,11 @@ class VAE(pl.LightningModule):
 
         # Decoder Architecture
         self.dec = Decoder(self.input_res, self.dec_block_str, self.dec_channel_str)
+        
+        # Glow prior (Normalizing Flow)
+        self.glow = Glow(
+            width=512, depth=32, n_levels=3, input_dims=(64, 1, 1), checkpoint_grads=False, lu_factorize=True
+        )
 
     def encode(self, x):
         mu, logvar = self.enc(x)
@@ -224,10 +231,16 @@ class VAE(pl.LightningModule):
         std = torch.exp(0.5 * logvar)
         eps = torch.randn_like(std)
         return mu + eps * std
-
+    '''
     def compute_kl(self, mu, logvar):
         return -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp())
-
+    '''
+    def compute_kl(self, z):
+        # Compute the log probability of z under the Glow prior
+        _, log_pz = self.glow(z)
+        return -log_pz.sum()
+    
+    '''
     def forward(self, z):
         # Only sample during inference
         decoder_out = self.decode(z)
@@ -239,7 +252,37 @@ class VAE(pl.LightningModule):
         z = self.reparameterize(mu, logvar)
         decoder_out = self.decode(z)
         return decoder_out
+    '''
+    def forward(self, z):
+        """
+        Only sample during inference.
+        Pass z through the Glow prior before decoding.
+        """
+        # Pass z through Glow prior
+        z_glow, _ = self.glow.inverse([z])
 
+        # Decode Glow-transformed latent
+        decoder_out = self.decode(z_glow)
+        return decoder_out
+
+    def forward_recons(self, x):
+        """
+        For generating reconstructions during inference.
+        Pass the sampled latent z through the Glow prior before decoding.
+        """
+        # Encode input
+        mu, logvar = self.encode(x)
+
+        # Sample z using reparameterization trick
+        z = self.reparameterize(mu, logvar)
+
+        # Pass z through Glow prior
+        z_glow, _ = self.glow.inverse([z])
+
+        # Decode Glow-transformed latent
+        decoder_out = self.decode(z_glow)
+        return decoder_out
+    
     def training_step(self, batch, batch_idx):
         x = batch
 
@@ -248,14 +291,23 @@ class VAE(pl.LightningModule):
 
         # Reparameterization Trick
         z = self.reparameterize(mu, logvar)
+        
+        # Pass z through Glow prior
+        z_glow, _ = self.glow.inverse([z])
+
 
         # Decoder
-        decoder_out = self.decode(z)
+        #decoder_out = self.decode(z)
+        # Decoder (decode Glow-transformed latent)
+        decoder_out = self.decode(z_glow)
 
         # Compute loss
         mse_loss = nn.MSELoss(reduction="sum")
         recons_loss = mse_loss(decoder_out, x)
-        kl_loss = self.compute_kl(mu, logvar)
+        #kl_loss = self.compute_kl(mu, logvar)
+        # Compute KL Loss with Glow Prior
+        kl_loss = self.compute_kl(z)
+
         self.log("Recons Loss", recons_loss, prog_bar=True)
         self.log("Kl Loss", kl_loss, prog_bar=True)
 

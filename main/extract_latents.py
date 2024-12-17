@@ -52,13 +52,27 @@ def extract(
     z_list = []
     for _, batch in tqdm(enumerate(loader)):
         batch = batch.to(dev)
+        '''
         with torch.no_grad():
             mu, logvar = vae.encode(batch)
             z = vae.reparameterize(mu, logvar)
 
         # Not transferring to CPU leads to memory overflow in GPU!
         z_list.append(z.cpu())
+        '''
+        with torch.no_grad():
+            # Encode the input
+            mu, logvar = vae.encode(batch)
 
+            # Sample z using the reparameterization trick
+            z = vae.reparameterize(mu, logvar)
+
+            # Pass z through the Glow prior
+            z_glow, _ = vae.glow.inverse([z])
+
+        # Append Glow-transformed latent
+        z_list.append(z_glow.cpu())
+        
     cat_z = torch.cat(z_list, dim=0)
 
     # Save the latents as numpy array
