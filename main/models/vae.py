@@ -217,7 +217,7 @@ class VAE(pl.LightningModule):
         
         # Glow prior (Normalizing Flow)
         self.glow = Glow(
-            width=512, depth=32, n_levels=3, input_dims=(512, 1, 1), checkpoint_grads=False, lu_factorize=True
+            width=256, depth=4, n_levels=1, input_dims=(512, 1, 1)
         )
 
     def encode(self, x):
@@ -234,13 +234,7 @@ class VAE(pl.LightningModule):
     '''
     def compute_kl(self, mu, logvar):
         return -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp())
-    '''
-    def compute_kl(self, z):
-        # Compute the log probability of z under the Glow prior
-        _, log_pz = self.glow(z)
-        return -log_pz.sum()
-    
-    '''
+
     def forward(self, z):
         # Only sample during inference
         decoder_out = self.decode(z)
@@ -259,7 +253,7 @@ class VAE(pl.LightningModule):
         Pass z through the Glow prior before decoding.
         """
         # Pass z through Glow prior
-        z_glow, _ = self.glow.inverse([z])
+        z_glow, _ = self.glow.inverse(z)
 
         # Decode Glow-transformed latent
         decoder_out = self.decode(z_glow)
@@ -277,7 +271,7 @@ class VAE(pl.LightningModule):
         z = self.reparameterize(mu, logvar)
 
         # Pass z through Glow prior
-        z_glow, _ = self.glow.inverse([z])
+        z_glow, _ = self.glow.inverse(z)
 
         # Decode Glow-transformed latent
         decoder_out = self.decode(z_glow)
@@ -293,8 +287,7 @@ class VAE(pl.LightningModule):
         z = self.reparameterize(mu, logvar)
         
         # Pass z through Glow prior
-        z_glow, _ = self.glow.inverse([z])
-
+        z_glow, _ = self.glow.inverse(z)
 
         # Decoder
         #decoder_out = self.decode(z)
@@ -306,7 +299,7 @@ class VAE(pl.LightningModule):
         recons_loss = mse_loss(decoder_out, x)
         #kl_loss = self.compute_kl(mu, logvar)
         # Compute KL Loss with Glow Prior
-        kl_loss = self.compute_kl(z)
+        kl_loss = self.glow.forward_kld(z)
 
         self.log("Recons Loss", recons_loss, prog_bar=True)
         self.log("Kl Loss", kl_loss, prog_bar=True)

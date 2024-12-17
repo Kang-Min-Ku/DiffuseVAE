@@ -68,7 +68,7 @@ def extract(
             z = vae.reparameterize(mu, logvar)
 
             # Pass z through the Glow prior
-            z_glow, _ = vae.glow.inverse([z])
+            z_glow, _ = vae.glow.inverse(z)
 
         # Append Glow-transformed latent
         z_list.append(z_glow.cpu())
