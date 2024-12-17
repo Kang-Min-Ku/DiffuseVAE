@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from glow import Glow  # Import the Glow model
+from .glow import Glow  # Import the Glow model
 
 def parse_layer_string(s):
     layers = []
@@ -217,7 +217,7 @@ class VAE(pl.LightningModule):
         
         # Glow prior (Normalizing Flow)
         self.glow = Glow(
-            width=512, depth=32, n_levels=3, input_dims=(64, 1, 1), checkpoint_grads=False, lu_factorize=True
+            width=512, depth=32, n_levels=3, input_dims=(512, 1, 1), checkpoint_grads=False, lu_factorize=True
         )
 
     def encode(self, x):

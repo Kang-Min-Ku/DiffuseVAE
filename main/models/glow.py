@@ -7,24 +7,24 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.distributions as D
-import torchvision.transforms as T
-from torchvision.utils import save_image, make_grid
-from torch.utils.data import DataLoader
-from torch.utils.checkpoint import checkpoint
+#import torchvision.transforms as T
+#from torchvision.utils import save_image, make_grid
+#from torch.utils.data import DataLoader
+#from torch.utils.checkpoint import checkpoint
 
-from torchvision.datasets import MNIST
-from datasets.celeba import CelebA
+#from torchvision.datasets import MNIST
+#from datasets.celeba import CelebA
 
-import numpy as np
-from tensorboardX import SummaryWriter
+#import numpy as np
+#from tensorboardX import SummaryWriter
 
-import os
-import time
+#import os
+#import time
 import math
-import argparse
-import pprint
+#import argparse
+#import pprint
 
-
+'''
 parser = argparse.ArgumentParser()
 # action
 parser.add_argument('--train', action='store_true', help='Train a flow.')
@@ -109,7 +109,7 @@ def fetch_dataloader(args, train=True, data_dependent_init=False):
     batch_size = args.batch_size_init if data_dependent_init else args.batch_size  # if data dependent init use init batch size
     kwargs = {'num_workers': 1, 'pin_memory': True} if args.device.type is 'cuda' else {}
     return DataLoader(dataset, batch_size=batch_size, shuffle=(sampler is None), drop_last=True, sampler=sampler, **kwargs)
-
+'''
 
 # --------------------
 # Model component layers
@@ -150,7 +150,16 @@ class Invertible1x1Conv(nn.Module):
 
         if lu_factorize:
             # compute LU factorization
-            p, l, u = torch.btriunpack(*w.unsqueeze(0).btrifact())
+            #p, l, u = torch.btriunpack(*w.unsqueeze(0).btrifact())
+            # Compute LU factorization
+            lu, pivots = torch.linalg.lu_factor(w)
+
+            # Reconstruct P, L, and U
+            n_channels = w.shape[0]
+            p = torch.eye(n_channels)[pivots - 1]  # Permutation matrix
+            l = torch.tril(lu, diagonal=-1) + torch.eye(n_channels)  # Lower triangular with identity
+            u = torch.triu(lu)  # Upper triangular
+            
             # initialize model parameters
             self.p, self.l, self.u = nn.Parameter(p.squeeze()), nn.Parameter(l.squeeze()), nn.Parameter(u.squeeze())
             s = self.u.diag()
@@ -457,7 +466,7 @@ class Glow(nn.Module):
         if bits_per_pixel:
             log_prob /= (math.log(2) * x[0].numel())
         return log_prob
-
+'''
 # --------------------
 # Train and evaluate
 # --------------------
@@ -768,3 +777,4 @@ if __name__ == '__main__':
 
     if args.on_main_process:
         writer.close()
+'''
