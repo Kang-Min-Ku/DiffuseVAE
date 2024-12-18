@@ -122,6 +122,8 @@ class Glow(nn.Module):
         prior_log_prob = -0.5 * ((z - mean) ** 2 / (std ** 2) + 2 * torch.log(std) + torch.log(2 * torch.tensor(torch.pi))).sum(dim=[1, 2, 3])
 
         kld_loss = -(prior_log_prob + log_det_jacobian).mean()
+        kld_loss = torch.abs(kld_loss)
+        kld_loss = torch.clamp(kld_loss, min=8e+4)
         return kld_loss
 
     def inverse(self, z):
