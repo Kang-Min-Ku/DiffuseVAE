@@ -7,7 +7,7 @@ This repo is for the team project of the Deep Generative Model lecture.
 
 ```bash
 pip install torch==2.2.0 torchvision==0.17.0 torchaudio==2.2.0 --index-url https://download.pytorch.org/whl/cu121
-pip install pytorch_lightning==1.4.9 lmdb click matplotlib wandb hydra-core scipy
+pip install torchmetrics==0.6.0 pytorch_lightning==1.4.9 lmdb click matplotlib wandb hydra-core scipy joblib scikit-learn torch-fidelity
 ```
 
 - Python==3.11.0 (Align the Python version with the PyTorch compatibility)
@@ -20,6 +20,9 @@ pip install pytorch_lightning==1.4.9 lmdb click matplotlib wandb hydra-core scip
 - wandb
 - hydra-core
 - scipy
+- joblib
+- scikit-learn
+- torch-fidelity
 
 # Requirements (evaluation metric)
 To calculate **off-the-shelf Inception Score (IS)**, the latest version of `torchmetrics` is required. However, this version causes a conflict when running **diffuseVAE**, necessitating the creation of a new Conda virtual environment.
@@ -28,6 +31,12 @@ While the repository also supports IS calculation compatible with **diffuseVAE**
 
 - torchmetrics>=1.6.0
 - clean-fid
+
+# Requirements (find similar ones)
+To find similar images, you may need these ones.
+
+- opencv-python
+- scikit-image
 
 # How to setup?
 
