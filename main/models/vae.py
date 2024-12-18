@@ -195,7 +195,7 @@ class VAE(pl.LightningModule):
         dec_block_str,
         enc_channel_str,
         dec_channel_str,
-        alpha=1.0,
+        alpha=0.01,
         lr=1e-4,
         glow_args=None,  # Glow prior arguments
     ):
@@ -216,9 +216,7 @@ class VAE(pl.LightningModule):
         self.dec = Decoder(self.input_res, self.dec_block_str, self.dec_channel_str)
         
         # Glow prior (Normalizing Flow)
-        self.glow = Glow(
-            width=256, depth=4, n_levels=1, input_dims=(512, 1, 1)
-        )
+        self.glow = Glow(channels=512, num_blocks=4)
 
     def encode(self, x):
         mu, logvar = self.enc(x)
@@ -278,6 +276,7 @@ class VAE(pl.LightningModule):
         return decoder_out
     
     def training_step(self, batch, batch_idx):
+        #print(self.glow)
         x = batch
 
         # Encoder
